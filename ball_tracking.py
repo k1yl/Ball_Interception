@@ -126,7 +126,7 @@ while True:
 	if pts_ammount == 5:
 
 		# uncomment to create scatter plot
-		plt.scatter(run_x, rise_y)
+		# plt.scatter(run_x, rise_y)
 
 		# polynomial fit with degree = 2
 		funct = np.polyfit(run_x, rise_y, 2)
@@ -135,12 +135,12 @@ while True:
 		model_list = funct.tolist()
 
 		# uncomment to add fitted polynomial line to scatterplot
-		polyline = np.linspace(1, 600, 1000)
-		plt.scatter(run_x, rise_y)
-		plt.plot(polyline, model(polyline))
+		# polyline = np.linspace(1, 600, 1000)
+		# plt.scatter(run_x, rise_y)
+		# plt.plot(polyline, model(polyline))
 
 		# uncomment if you want to see graph in seperate window
-		plt.show()
+		# plt.show()
 
 		# print the function for the graph
 		print(model)
