@@ -6,6 +6,6 @@ This code uses a veriety of open source modules with Python3 to complete its tas
 To use this code you must have installed the most recent versions of numpy, imutils, opencv-python, matplotlib, and scipy. 
 Included are pipenv files intended to simplify and standardize the modules used within the code, you will need the latest version of pipenv in order to run and use these additional files.
 
-In its current stage, the program is able to identify brighly colored objects (as defined by the color bounds defined within the code) plot and record the points and return a quadratic regression for the path of the ball.
+In its current stage, the program is able to identify brighly colored objects (as defined by the color bounds defined within the code) plot and record the points, return a quadratic regression for the path of the ball, and display the regression as the ball is in flight.
 
 This project is still in development.
