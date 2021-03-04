@@ -37,6 +37,10 @@ pts = deque(maxlen=args["buffer"])
 run_x = []
 rise_y = []
 
+# initialize function variable and R^2 (error) value
+funct = None
+r_squared = None
+
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
@@ -120,10 +124,10 @@ while True:
 		# the connecting lines, and add to point ammount
 		thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
 		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
-		pts_ammount +=1
+		pts_ammount += 1
 		
 	# check if there are enough points to evaluate accurately
-	if pts_ammount == 5 or pts_ammount >= 5:
+	if pts_ammount >= 5:
 
 		# uncomment to create scatter plot
 		# plt.scatter(run_x, rise_y)
@@ -132,7 +136,15 @@ while True:
 		funct = np.polyfit(run_x, rise_y, 2)
 		model = np.poly1d(funct)
 
-		model_list = funct.tolist()
+		# create a correlation matrix of the y points previously
+		# recorded and the predicted y points, then evaluate the 
+		# r^2 (error) value
+		correlation_matrix = np.corrcoef(rise_y, np.polyval(funct, run_x))
+		correlation_xy = correlation_matrix[0,1]
+		r_squared = correlation_xy**2
+
+		# print the r^2 (error) value
+		print(r_squared)
 
 		# uncomment to add fitted polynomial line to scatterplot
 		# polyline = np.linspace(1, 600, 1000)
@@ -144,12 +156,15 @@ while True:
 
 		# print the function for the graph
 		print(model)
-		print(model_list)
 
-		# create a list of x points to evaluate at and initialize
-		# future points list
-		future_x_pts = (0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650)
-		future_pts = []
+	# create a list of x points to evaluate at and initialize
+	# future points list
+	future_x_pts = (0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650)
+	future_pts = []
+
+	# draw the parabola when the function has low enough error
+	# to be accurate
+	if r_squared is not None and r_squared >= 0.99:
 
 		# loop through the x points, evaluate the corresponding
 		# y values and add them to the future_pts list as a touple
@@ -168,8 +183,8 @@ while True:
 
 			# otherwise, compute the thickness of the line and draw
 			# the connecting lines
-			thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-			cv2.line(frame, future_pts[i - 1], future_pts[i], (255, 65, 40), thickness)
+			thickness = int(2)
+			cv2.line(frame, future_pts[i - 1], future_pts[i], (255, 0, 0), thickness)
 
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
