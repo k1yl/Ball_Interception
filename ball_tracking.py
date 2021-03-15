@@ -104,6 +104,7 @@ while True:
 		rise_y.append(int(M["m01"] / M["m00"]))
 
 		# update last capture variable
+		t = time.localtime()
 		last_capture = time.strftime("%M.%S", t)
 
 		# only proceed if the radius meets a minimum size
@@ -194,13 +195,10 @@ while True:
 			thickness = int(2)
 			cv2.line(frame, future_pts[i - 1], future_pts[i], (255, 0, 0), thickness)
 
-	float_sub = float(last_capture) - float(time.strftime("%M.%S", t))
-
-	print(float_sub)
 	# when five seconds pass since the last capture, the X and
 	# Y points will reset for better live video and multiple 
 	# object recognition
-	if float(last_capture) - float(time.strftime("%M.%S", t)) <= -0.02:
+	if last_capture is not None and float(last_capture) - float(time.strftime("%M.%S", t)) <= -0.02:
 		run_x = []
 		rise_y = []
 		pts = deque(maxlen=args["buffer"])
