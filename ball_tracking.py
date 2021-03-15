@@ -41,10 +41,9 @@ rise_y = []
 funct = None
 r_squared = None
 
-# get the starting time and initialize last capture variable
-t = None
+# initialize last capture and current time variable
+current_time = None
 last_capture = None
-print(last_capture)
 
 # if a video path was not supplied, grab the reference
 # to the webcam
@@ -90,7 +89,9 @@ while True:
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = imutils.grab_contours(cnts)
 	center = None
-	t = time.localtime()
+
+	# update the current time
+	current_time = time.localtime()
 
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
@@ -105,7 +106,7 @@ while True:
 		rise_y.append(int(M["m01"] / M["m00"]))
 
 		# update last capture variable
-		last_capture = time.strftime("%M.%S", t)
+		last_capture = time.strftime("%M.%S", current_time)
 
 		# only proceed if the radius meets a minimum size
 		if radius > 10:
@@ -166,6 +167,8 @@ while True:
 		# print the function for the graph
 		print(model)
 
+		# reset points ammount so they only evaluate once per
+		# five points
 		pts_ammount = 0		
 
 	# create a list of x points to evaluate at and initialize
@@ -197,10 +200,10 @@ while True:
 			thickness = int(2)
 			cv2.line(frame, future_pts[i - 1], future_pts[i], (255, 0, 0), thickness)
 
-	# when five seconds pass since the last capture, the X and
+	# when two seconds pass since the last capture, the X and
 	# Y points will reset for better live video and multiple 
 	# object recognition
-	if last_capture is not None and float(last_capture) - float(time.strftime("%M.%S", t)) <= -0.02:
+	if last_capture is not None and float(last_capture) - float(time.strftime("%M.%S", current_time)) <= -0.02:
 		run_x = []
 		rise_y = []
 		pts = deque(maxlen=args["buffer"])
