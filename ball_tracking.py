@@ -41,6 +41,11 @@ rise_y = []
 funct = None
 r_squared = None
 
+# get the starting time and initialize last capture variable
+t = time.localtime()
+last_capture = None
+print(last_capture)
+
 # if a video path was not supplied, grab the reference
 # to the webcam
 if not args.get("video", False):
@@ -98,6 +103,9 @@ while True:
 		run_x.append(int(M["m10"] / M["m00"]))
 		rise_y.append(int(M["m01"] / M["m00"]))
 
+		# update last capture variable
+		last_capture = time.strftime("%M.%S", t)
+
 		# only proceed if the radius meets a minimum size
 		if radius > 10:
 			# draw the circle and centroid on the frame,
@@ -144,7 +152,7 @@ while True:
 		r_squared = correlation_xy**2
 
 		# print the r^2 (error) value
-		print(r_squared)
+		# print(r_squared)
 
 		# uncomment to add fitted polynomial line to scatterplot
 		# polyline = np.linspace(1, 600, 1000)
@@ -155,7 +163,7 @@ while True:
 		# plt.show()
 
 		# print the function for the graph
-		print(model)
+		# print(model)
 
 	# create a list of x points to evaluate at and initialize
 	# future points list
@@ -164,7 +172,7 @@ while True:
 
 	# draw the parabola when the function has low enough error
 	# to be accurate
-	if r_squared is not None and r_squared >= 0.99:
+	if r_squared is not None:
 
 		# loop through the x points, evaluate the corresponding
 		# y values and add them to the future_pts list as a touple
@@ -185,6 +193,18 @@ while True:
 			# the connecting lines
 			thickness = int(2)
 			cv2.line(frame, future_pts[i - 1], future_pts[i], (255, 0, 0), thickness)
+
+	float_sub = float(last_capture) - float(time.strftime("%M.%S", t))
+
+	print(float_sub)
+	# when five seconds pass since the last capture, the X and
+	# Y points will reset for better live video and multiple 
+	# object recognition
+	if float(last_capture) - float(time.strftime("%M.%S", t)) <= -0.02:
+		run_x = []
+		rise_y = []
+		pts = deque(maxlen=args["buffer"])
+		print('a')
 
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
