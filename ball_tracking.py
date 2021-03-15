@@ -42,7 +42,7 @@ funct = None
 r_squared = None
 
 # get the starting time and initialize last capture variable
-t = time.localtime()
+t = None
 last_capture = None
 print(last_capture)
 
@@ -90,6 +90,7 @@ while True:
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = imutils.grab_contours(cnts)
 	center = None
+	t = time.localtime()
 
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
@@ -104,7 +105,6 @@ while True:
 		rise_y.append(int(M["m01"] / M["m00"]))
 
 		# update last capture variable
-		t = time.localtime()
 		last_capture = time.strftime("%M.%S", t)
 
 		# only proceed if the radius meets a minimum size
@@ -164,7 +164,9 @@ while True:
 		# plt.show()
 
 		# print the function for the graph
-		# print(model)
+		print(model)
+
+		pts_ammount = 0		
 
 	# create a list of x points to evaluate at and initialize
 	# future points list
@@ -202,7 +204,6 @@ while True:
 		run_x = []
 		rise_y = []
 		pts = deque(maxlen=args["buffer"])
-		print('a')
 
 	# show the frame to our screen
 	cv2.imshow("Frame", frame)
